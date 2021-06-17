@@ -40,7 +40,7 @@ public abstract class VismaPayRequest<T extends VismaPayResponse> {
 	public T parseResponse(Pair<Response, String> response) {
 		T vismaPayResponse = parseResponse(response.snd);
 
-		if (!response.fst.isSuccessful() || vismaPayResponse.getResult() != 0) { // TODO: exists in all requests?
+		if (!response.fst.isSuccessful() || vismaPayResponse.getResult() == null) {
 			throw new VismaPayResponseException(vismaPayResponse, "Response from Visma Pay API wasn't a success response");
 		}
 		return vismaPayResponse;

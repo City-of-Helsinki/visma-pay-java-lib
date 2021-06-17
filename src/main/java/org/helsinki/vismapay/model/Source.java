@@ -10,52 +10,12 @@ import java.io.Serializable;
 @Accessors(chain = true)
 public class Source implements Serializable {
 
-	public enum Type {
-		@SuppressWarnings("SpellCheckingInspection")
-		@SerializedName("e-payment")
-		EPAYMENT("e-payment"),
+	@SuppressWarnings("SpellCheckingInspection")
+	public final static String TYPE_EPAYMENT = "e-payment";
+	public final static String TYPE_CARD = "card";
+	public final static String TYPE_TERMINAL = "terminal";
 
-		@SerializedName("card")
-		CARD("card"),
-
-		@SerializedName("terminal")
-		TERMINAL("terminal");
-
-		private final String name;
-
-		Type(String name) {
-			this.name = name;
-		}
-
-		@Override
-		public String toString() {
-			return name;
-		}
-	}
-
-	public enum ThreeDSecureUsed {
-		@SerializedName("Y")
-		USED("Y"),
-
-		@SerializedName("N")
-		NOT_USED("N"),
-
-		@SerializedName("A")
-		ATTEMPTED("A");
-
-		private final String name;
-
-		ThreeDSecureUsed(String name) {
-			this.name = name;
-		}
-
-		@Override
-		public String toString() {
-			return name;
-		}
-	}
-
-	private Type object;
+	private String object;
 	private String brand;
 	private String last4;
 
@@ -69,7 +29,7 @@ public class Source implements Serializable {
 	private Boolean signatureRequired;
 
 	@SerializedName("id_check_required")
-	private Boolean idCheckRequired;
+	private Boolean idCheckRequired; // TODO: test if these work!
 
 	@SerializedName("exp_year")
 	private Short expYear;
@@ -81,7 +41,7 @@ public class Source implements Serializable {
 	private String cardToken;
 
 	@SerializedName("card_verified")
-	private ThreeDSecureUsed cardVerified;
+	private String cardVerified;
 
 	@SerializedName("card_country")
 	private String cardCountry;

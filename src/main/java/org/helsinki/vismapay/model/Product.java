@@ -12,33 +12,16 @@ import java.math.BigDecimal;
 public class Product implements Serializable {
 	private static final long serialVersionUID = -823447845648L;
 
-	public enum Type {
-		PRODUCT(1),
-		SHIPMENT_COST(2),
-		HANDLING_COST(3),
-		DISCOUNT(4);
-
-		private final int value;
-
-		Type(int value) {
-			this.value = value;
-		}
-
-		public int getValue() {
-			return value;
-		}
-	}
-
 	private String id;
 	private String title;
 	private Integer count;
-	private Integer tax; // TODO: will integer be enough?
+	private Integer tax;
 
 	@SerializedName(value = "pretax_price")
 	private BigDecimal pretaxPrice;
 
 	private BigDecimal price;
-	private Type type = Type.PRODUCT;
+	private Integer type = ProductType.TYPE_PRODUCT;
 
 	@SerializedName(value = "merchant_id")
 	private Long merchantId;

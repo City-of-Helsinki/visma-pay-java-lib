@@ -10,7 +10,7 @@ public class ReturnDataAuthCodeBuilder {
 	private final String privateKey;
 
 	@NonNull
-	private final Byte returnCode;
+	private final Short returnCode;
 
 	@NonNull
 	private final String orderNumber;

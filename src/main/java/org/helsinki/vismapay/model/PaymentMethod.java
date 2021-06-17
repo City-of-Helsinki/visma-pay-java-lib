@@ -1,4 +1,4 @@
-package org.helsinki.vismapay.model.paymenttoken;
+package org.helsinki.vismapay.model;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
@@ -12,59 +12,17 @@ import java.util.Set;
 @Accessors(chain = true)
 public class PaymentMethod implements Serializable {
 
+	@SuppressWarnings("SpellCheckingInspection")
+	public final static String TYPE_EPAYMENT = "e-payment";
+	public final static String TYPE_EMBEDDED = "embedded";
+	public final static String TYPE_TERMINAL = "terminal";
+	public final static String TYPE_CARD = "card";
+
 	public PaymentMethod() {
-		setType(Type.EPAYMENT);
+		setType(TYPE_EPAYMENT);
 	}
 
-	public enum Type {
-		@SuppressWarnings("SpellCheckingInspection")
-		@SerializedName("e-payment")
-		EPAYMENT("e-payment"),
-
-		@SerializedName("embedded")
-		EMBEDDED("embedded"),
-
-		@SerializedName("terminal")
-		TERMINAL("terminal");
-
-		private final String name;
-
-		Type(String name) {
-			this.name = name;
-		}
-
-		@Override
-		public String toString() {
-			return name;
-		}
-	}
-
-	public enum Lang {
-		@SerializedName("fi")
-		FI("fi"),
-
-		@SerializedName("en")
-		EN("en"),
-
-		@SerializedName("sv")
-		SV("sv"),
-
-		@SerializedName("ru")
-		RU("ru");
-
-		private final String name;
-
-		Lang(String name) {
-			this.name = name;
-		}
-
-		@Override
-		public String toString() {
-			return name;
-		}
-	}
-
-	private Type type;
+	private String type;
 
 	@SerializedName(value = "register_card_token")
 	private Boolean registerCardToken;
@@ -75,7 +33,7 @@ public class PaymentMethod implements Serializable {
 	@SerializedName(value = "notify_url")
 	private String notifyUrl;
 
-	private Lang lang = Lang.FI;
+	private String lang = "fi";
 
 	@SerializedName(value = "token_valid_until")
 	private Instant tokenValidUntil;

@@ -1,7 +1,5 @@
 package org.helsinki.vismapay.request;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,28 +7,27 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import org.helsinki.vismapay.VismaPayClient;
-import org.helsinki.vismapay.gson.adapter.InstantSerializer;
 import org.helsinki.vismapay.model.Customer;
+import org.helsinki.vismapay.model.Initiator;
 import org.helsinki.vismapay.model.Product;
-import org.helsinki.vismapay.model.PaymentMethod;
 import org.helsinki.vismapay.request.payload.trait.impl.BaseOrderIdentifiablePayload;
-import org.helsinki.vismapay.response.ChargeResponse;
+import org.helsinki.vismapay.response.ChargeCardTokenResponse;
 import org.helsinki.vismapay.util.AuthCodeCalculator;
 
 import java.math.BigInteger;
-import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
 @RequiredArgsConstructor
-public class ChargeRequest extends VismaPayPostRequest<ChargeResponse, ChargeRequest.PaymentTokenPayload> {
+public class ChargeCardTokenRequest extends VismaPayPostRequest<ChargeCardTokenResponse, ChargeCardTokenRequest.CardTokenPayload> {
 
 	@NonNull
-	private final PaymentTokenPayload payload;
+	private final CardTokenPayload payload;
 
 	@Override
-	protected PaymentTokenPayload getPayload(VismaPayClient client) {
-		String authCodeStr = client.getApiKey() + "|" + payload.getOrderNumber();
+	protected CardTokenPayload getPayload(VismaPayClient client) {
+		String authCodeStr = client.getApiKey() + "|" +
+				payload.getOrderNumber() + "|" + payload.getCardToken();
 		payload.setAuthCode(AuthCodeCalculator.calcAuthCode(client.getPrivateKey(), authCodeStr));
 
 		return payload;
@@ -38,35 +35,29 @@ public class ChargeRequest extends VismaPayPostRequest<ChargeResponse, ChargeReq
 
 	@Override
 	public String path() {
-		return "auth_payment";
+		return "charge_card_token";
 	}
 
 	@Override
-	public Class<ChargeResponse> getResponseType() {
-		return ChargeResponse.class;
-	}
-
-	@Override
-	protected Gson getDefaultGson() {
-		GsonBuilder gsonBuilder = new GsonBuilder();
-		gsonBuilder.registerTypeAdapter(Instant.class, new InstantSerializer());
-		return gsonBuilder.create();
+	public Class<ChargeCardTokenResponse> getResponseType() {
+		return ChargeCardTokenResponse.class;
 	}
 
 	@EqualsAndHashCode(callSuper = true)
 	@Data
 	@Accessors(chain = true)
-	public static class PaymentTokenPayload extends BaseOrderIdentifiablePayload<PaymentTokenPayload> {
+	public static class CardTokenPayload extends BaseOrderIdentifiablePayload<CardTokenPayload> {
 
 		private BigInteger amount;
 		private String currency;
 		private String email;
 
-		@SerializedName("payment_method")
-		private PaymentMethod paymentMethod;
+		@SerializedName("card_token")
+		private String cardToken;
 
 		private Customer customer;
 		private Set<Product> products;
+		private Initiator initiator;
 
 		public void addProduct(Product product) {
 			if (products == null) {

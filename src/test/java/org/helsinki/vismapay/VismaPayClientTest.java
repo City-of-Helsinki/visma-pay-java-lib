@@ -4,14 +4,12 @@ import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
+import org.helsinki.vismapay.model.Initiator;
 import org.helsinki.vismapay.model.Product;
 import org.helsinki.vismapay.model.Source;
-import org.helsinki.vismapay.model.paymenttoken.PaymentMethod;
+import org.helsinki.vismapay.model.PaymentMethod;
 import org.helsinki.vismapay.request.*;
-import org.helsinki.vismapay.response.CardTokenResponse;
-import org.helsinki.vismapay.response.ChargeResponse;
-import org.helsinki.vismapay.response.PaymentStatusResponse;
-import org.helsinki.vismapay.response.VismaPayResponse;
+import org.helsinki.vismapay.response.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,12 +55,12 @@ public class VismaPayClientTest {
 	}
 
 	@Test
-	public void testGetTokenEPaymentRequest() throws Exception {
+	public void testGetTokenEPayment() throws Exception {
 		String expectedResponseBody = read("get_token_e-payment_response_body.json");
 		arrangeMockServerResponse(expectedResponseBody);
 
 		CompletableFuture<ChargeResponse> responseCF =
-				client.sendRequest(getChargeRequestForGetTokenEPaymentRequest());
+				client.sendRequest(getChargeRequestForGetTokenEPayment());
 
 		RecordedRequest request = mockWebServer.takeRequest();
 		assertSame(1, mockWebServer.getRequestCount());
@@ -79,7 +77,29 @@ public class VismaPayClientTest {
 
 		ChargeResponse response = responseCF.get();
 		assertEquals("test_token", response.getToken());
-		assertEquals(PaymentMethod.Type.EPAYMENT, response.getType());
+		assertEquals(PaymentMethod.TYPE_EPAYMENT, response.getType());
+	}
+
+	@Test
+	public void testGetTokenCard() throws Exception {
+		String expectedResponseBody = read("get_token_card_response_body.json");
+		arrangeMockServerResponse(expectedResponseBody);
+
+		CompletableFuture<ChargeResponse> responseCF =
+				client.sendRequest(getChargeRequestForGetTokenCard());
+
+		RecordedRequest request = mockWebServer.takeRequest();
+		assertSame(1, mockWebServer.getRequestCount());
+		assertEquals(MOCK_WEB_SERVER_BASE_URL + "/auth_payment", request.getPath());
+		JSONAssert.assertEquals(
+				read("get_token_card_request_body.json"),
+				request.getBody().readUtf8(),
+				true
+		);
+
+		ChargeResponse response = responseCF.get();
+		assertEquals("test_token", response.getToken());
+		assertEquals(Source.TYPE_CARD, response.getType());
 	}
 
 	@Test
@@ -138,6 +158,48 @@ public class VismaPayClientTest {
 
 		assertSame(1, mockWebServer.getRequestCount());
 	}*/
+
+	@Test
+	public void testChargeCardToken() throws Exception {
+		String expectedResponseBody = read("charge_card_token_response_body.json");
+		arrangeMockServerResponse(expectedResponseBody);
+
+		CompletableFuture<ChargeCardTokenResponse> responseCF =
+				client.sendRequest(getChargeCardTokenRequest(false));
+
+		RecordedRequest request = mockWebServer.takeRequest();
+		assertSame(1, mockWebServer.getRequestCount());
+		assertEquals(MOCK_WEB_SERVER_BASE_URL + "/charge_card_token", request.getPath());
+		JSONAssert.assertEquals(
+				read("charge_card_token_request_body.json"),
+				request.getBody().readUtf8(),
+				true
+		);
+
+		ChargeCardTokenResponse response = responseCF.get();
+		assertSame(0, response.getResult());
+	}
+
+	@Test
+	public void testChargeCardTokenCIT() throws Exception {
+		String expectedResponseBody = read("charge_card_token_cit_response_body.json");
+		arrangeMockServerResponse(expectedResponseBody);
+
+		CompletableFuture<ChargeCardTokenResponse> responseCF =
+				client.sendRequest(getChargeCardTokenRequest(true));
+
+		RecordedRequest request = mockWebServer.takeRequest();
+		assertSame(1, mockWebServer.getRequestCount());
+		assertEquals(MOCK_WEB_SERVER_BASE_URL + "/charge_card_token", request.getPath());
+		JSONAssert.assertEquals(
+				read("charge_card_token_cit_request_body.json"),
+				request.getBody().readUtf8(),
+				true
+		);
+
+		ChargeCardTokenResponse response = responseCF.get();
+		assertSame(30, response.getResult());
+	}
 
 	@Test
 	public void testCapturePayment() throws Exception {
@@ -201,11 +263,20 @@ public class VismaPayClientTest {
 		assertCardTokenResponseValues(responseCF.get());
 	}
 
-	// TODO: implement other cases!
+	public void testDeleteCardToken() {
+		// TODO
+	}
 
-	private ChargeRequest getChargeRequestForGetTokenEPaymentRequest() {
+	// TODO: testDeleteCardToken
+	// TODO: testGetMerchantPaymentMethods
+	// TODO: testGetPayment
+	// TODO: testGetRefund
+	// TODO: testCreateRefund
+	// TODO: testCancelRefund
+
+	private ChargeRequest getChargeRequestForGetTokenEPayment() {
 		PaymentMethod paymentMethod = new PaymentMethod();
-		paymentMethod.setType(PaymentMethod.Type.EPAYMENT)
+		paymentMethod.setType(PaymentMethod.TYPE_EPAYMENT)
 				.setReturnUrl("https://localhost/return")
 				.setNotifyUrl("https://localhost/return");
 
@@ -227,6 +298,19 @@ public class VismaPayClientTest {
 		return new ChargeRequest(payload);
 	}
 
+	private ChargeRequest getChargeRequestForGetTokenCard() {
+		PaymentMethod paymentMethod = new PaymentMethod();
+		paymentMethod.setType(PaymentMethod.TYPE_CARD);
+
+		ChargeRequest.PaymentTokenPayload payload = new ChargeRequest.PaymentTokenPayload();
+		payload.setAmount(BigInteger.valueOf(100))
+				.setOrderNumber("a")
+				.setCurrency("EUR")
+				.setPaymentMethod(paymentMethod);
+
+		return new ChargeRequest(payload);
+	}
+
 	private CheckPaymentStatusRequest getPaymentStatusRequest(boolean useToken) {
 		CheckPaymentStatusRequest.PaymentStatusPayload payload = new CheckPaymentStatusRequest.PaymentStatusPayload();
 
@@ -238,24 +322,38 @@ public class VismaPayClientTest {
 		return new CheckPaymentStatusRequest(payload);
 	}
 
+	private ChargeCardTokenRequest getChargeCardTokenRequest(boolean citVersion) {
+		ChargeCardTokenRequest.CardTokenPayload payload = new ChargeCardTokenRequest.CardTokenPayload();
+		payload.setAmount(BigInteger.valueOf(100))
+				.setOrderNumber("a")
+				.setCurrency("EUR")
+				.setCardToken("card_token");
+
+		if(citVersion) {
+			Initiator initiator = new Initiator().setType(Initiator.TYPE_CUSTOMER_INITIATED)
+					.setReturnUrl("https://localhost/return")
+					.setNotifyUrl("https://localhost/return");
+
+			payload.setInitiator(initiator);
+		}
+		return new ChargeCardTokenRequest(payload);
+	}
+
 	private CapturePaymentRequest getCapturePaymentRequest() {
 		CapturePaymentRequest.CapturePaymentPayload payload = new CapturePaymentRequest.CapturePaymentPayload();
 		payload.setOrderNumber("a");
-
 		return new CapturePaymentRequest(payload);
 	}
 
 	private CancelPaymentRequest getCancelPaymentRequest() {
 		CancelPaymentRequest.CancelPaymentPayload payload = new CancelPaymentRequest.CancelPaymentPayload();
 		payload.setOrderNumber("a");
-
 		return new CancelPaymentRequest(payload);
 	}
 
 	private CardTokenRequest getCardTokenRequest() {
 		CardTokenRequest.CardTokenPayload payload = new CardTokenRequest.CardTokenPayload();
 		payload.setCardToken("card_token");
-
 		return new CardTokenRequest(payload);
 	}
 
@@ -263,7 +361,7 @@ public class VismaPayClientTest {
 		Source source = response.getSource();
 
 		assertSame(0, response.getResult());
-		assertEquals(Source.Type.CARD, source.getObject());
+		assertEquals(Source.TYPE_CARD, source.getObject());
 		assertEquals("1234", source.getLast4());
 		assertEquals(Short.valueOf((short)2015), source.getExpYear());
 		assertSame((byte)5, source.getExpMonth());
