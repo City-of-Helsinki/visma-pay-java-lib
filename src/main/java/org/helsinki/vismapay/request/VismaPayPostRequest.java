@@ -29,7 +29,6 @@ public abstract class VismaPayPostRequest<T extends VismaPayResponse, B extends 
 		if (getPayload(client) == null) {
 			return RequestBody.create(null, "");
 		}
-
 		client.setVismaPayPayloadDefaults(getPayload(client));
 
 		Gson gson = getDefaultGson();

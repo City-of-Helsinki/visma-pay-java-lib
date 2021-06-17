@@ -16,15 +16,15 @@ import java.io.Serializable;
 public class CheckPaymentStatusRequest extends VismaPayPostRequest<PaymentStatusResponse, CheckPaymentStatusRequest.PaymentStatusPayload> {
 
 	@NonNull
-	private final PaymentStatusPayload paymentStatusPayload;
+	private final PaymentStatusPayload payload;
 
 	@Override
 	protected PaymentStatusPayload getPayload(VismaPayClient client) {
 		String authCodeStr = client.getApiKey() +
-				"|" + (paymentStatusPayload.getToken() != null ? paymentStatusPayload.getToken() : paymentStatusPayload.getOrderNumber());
-		paymentStatusPayload.setAuthCode(AuthCodeCalculator.calcAuthCode(client.getPrivateKey(), authCodeStr));
+				"|" + (payload.getToken() != null ? payload.getToken() : payload.getOrderNumber());
+		payload.setAuthCode(AuthCodeCalculator.calcAuthCode(client.getPrivateKey(), authCodeStr));
 
-		return paymentStatusPayload;
+		return payload;
 	}
 
 	@Override

@@ -27,14 +27,14 @@ import java.util.Set;
 public class ChargeRequest extends VismaPayPostRequest<ChargeResponse, ChargeRequest.PaymentTokenPayload> {
 
 	@NonNull
-	private final PaymentTokenPayload paymentTokenPayload;
+	private final PaymentTokenPayload payload;
 
 	@Override
 	protected PaymentTokenPayload getPayload(VismaPayClient client) {
-		String authCodeStr = client.getApiKey() + "|" + paymentTokenPayload.getOrderNumber();
-		paymentTokenPayload.setAuthCode(AuthCodeCalculator.calcAuthCode(client.getPrivateKey(), authCodeStr));
+		String authCodeStr = client.getApiKey() + "|" + payload.getOrderNumber();
+		payload.setAuthCode(AuthCodeCalculator.calcAuthCode(client.getPrivateKey(), authCodeStr));
 
-		return paymentTokenPayload;
+		return payload;
 	}
 
 	@Override
