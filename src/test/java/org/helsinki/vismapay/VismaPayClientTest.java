@@ -263,8 +263,25 @@ public class VismaPayClientTest {
 		assertCardTokenResponseValues(responseCF.get());
 	}
 
-	public void testDeleteCardToken() {
-		// TODO
+	@Test
+	public void testDeleteCardToken() throws Exception {
+		String expectedResponseBody = "{\"result\": 0}";
+		arrangeMockServerResponse(expectedResponseBody);
+
+		CompletableFuture<VismaPayResponse> responseCF =
+				client.sendRequest(getDeleteCardTokenRequest());
+
+		RecordedRequest request = mockWebServer.takeRequest();
+		assertSame(1, mockWebServer.getRequestCount());
+		assertEquals(MOCK_WEB_SERVER_BASE_URL + "/delete_card_token", request.getPath());
+		JSONAssert.assertEquals(
+				read("get_card_token_request_body.json"),
+				request.getBody().readUtf8(),
+				true
+		);
+
+		VismaPayResponse response = responseCF.get();
+		assertSame(0, response.getResult());
 	}
 
 	// TODO: testDeleteCardToken
@@ -355,6 +372,12 @@ public class VismaPayClientTest {
 		CardTokenRequest.CardTokenPayload payload = new CardTokenRequest.CardTokenPayload();
 		payload.setCardToken("card_token");
 		return new CardTokenRequest(payload);
+	}
+
+	private DeleteCardTokenRequest getDeleteCardTokenRequest() {
+		DeleteCardTokenRequest.DeleteCardTokenPayload payload = new DeleteCardTokenRequest.DeleteCardTokenPayload();
+		payload.setCardToken("card_token");
+		return new DeleteCardTokenRequest(payload);
 	}
 
 	private void assertCardTokenResponseValues(CardTokenResponse response) {
