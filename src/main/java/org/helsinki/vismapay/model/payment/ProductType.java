@@ -1,4 +1,4 @@
-package org.helsinki.vismapay.model;
+package org.helsinki.vismapay.model.payment;
 
 public interface ProductType {
 	public final static int TYPE_PRODUCT = 1;

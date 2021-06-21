@@ -1,4 +1,4 @@
-package org.helsinki.vismapay.request;
+package org.helsinki.vismapay.request.payment;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -6,6 +6,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import org.helsinki.vismapay.VismaPayClient;
+import org.helsinki.vismapay.request.VismaPayPostRequest;
 import org.helsinki.vismapay.request.payload.trait.impl.BaseOrderIdentifiablePayload;
 import org.helsinki.vismapay.response.VismaPayResponse;
 import org.helsinki.vismapay.util.AuthCodeCalculator;
@@ -13,7 +14,8 @@ import org.helsinki.vismapay.util.AuthCodeCalculator;
 import java.io.Serializable;
 
 @RequiredArgsConstructor
-public class CancelPaymentRequest extends VismaPayPostRequest<VismaPayResponse, CancelPaymentRequest.CancelPaymentPayload> {
+public class CancelPaymentRequest extends
+		VismaPayPostRequest<VismaPayResponse, CancelPaymentRequest.CancelPaymentPayload> {
 
 	@NonNull
 	private final CancelPaymentPayload payload;
@@ -43,7 +45,7 @@ public class CancelPaymentRequest extends VismaPayPostRequest<VismaPayResponse, 
 	@Data
 	@Accessors(chain = true)
 	public static class CancelPaymentPayload
-			extends BaseOrderIdentifiablePayload<CheckPaymentStatusRequest.PaymentStatusPayload>
+			extends BaseOrderIdentifiablePayload<CancelPaymentPayload>
 			implements Serializable {
 	}
 }

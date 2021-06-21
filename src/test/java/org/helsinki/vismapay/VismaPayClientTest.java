@@ -4,12 +4,12 @@ import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
-import org.helsinki.vismapay.model.Initiator;
-import org.helsinki.vismapay.model.Product;
-import org.helsinki.vismapay.model.Source;
-import org.helsinki.vismapay.model.PaymentMethod;
-import org.helsinki.vismapay.request.*;
+import org.helsinki.vismapay.model.payment.*;
+import org.helsinki.vismapay.request.payment.*;
+import org.helsinki.vismapay.request.paymentmethods.PaymentMethodsRequest;
 import org.helsinki.vismapay.response.*;
+import org.helsinki.vismapay.response.payment.*;
+import org.helsinki.vismapay.response.paymentmethods.PaymentMethodsResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,8 +24,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
 
+import static junit.framework.TestCase.*;
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertSame;
 
 public class VismaPayClientTest {
 
@@ -34,13 +34,14 @@ public class VismaPayClientTest {
 
 	private MockWebServer mockWebServer;
 	private VismaPayClient client;
+	private HttpUrl baseUrl;
 
 	@Before
 	public void setUp() throws IOException {
 		mockWebServer = new MockWebServer();
 		mockWebServer.start();
 
-		HttpUrl baseUrl = mockWebServer.url(MOCK_WEB_SERVER_BASE_URL);
+		baseUrl = mockWebServer.url(MOCK_WEB_SERVER_BASE_URL);
 		client = new VismaPayClient(
 				"TESTAPIKEY",
 				"private_key",
@@ -283,13 +284,120 @@ public class VismaPayClientTest {
 		VismaPayResponse response = responseCF.get();
 		assertSame(0, response.getResult());
 	}
+	
+	@Test
+	public void testGetMerchantPaymentMethods() throws Exception {
+		client = new VismaPayClient(
+				"TESTAPIKEY",
+				"private_key",
+				"2",
+				baseUrl.toString()
+		);
 
-	// TODO: testDeleteCardToken
-	// TODO: testGetMerchantPaymentMethods
-	// TODO: testGetPayment
-	// TODO: testGetRefund
-	// TODO: testCreateRefund
-	// TODO: testCancelRefund
+		String expectedResponseBody = read("get_merchant_payment_methods_response_body.json");
+		arrangeMockServerResponse(expectedResponseBody);
+
+		CompletableFuture<PaymentMethodsResponse> responseCF =
+				client.sendRequest(getMerchantPaymentMethodsRequest());
+
+		RecordedRequest request = mockWebServer.takeRequest();
+		assertSame(1, mockWebServer.getRequestCount());
+		assertEquals(MOCK_WEB_SERVER_BASE_URL + "/merchant_payment_methods", request.getPath());
+		JSONAssert.assertEquals(
+				read("get_merchant_payment_methods_request_body.json"),
+				request.getBody().readUtf8(),
+				true
+		);
+
+		assertPaymentMethodsResponseValues(responseCF.get());
+	}
+
+	@Test
+	public void testGetPayment() throws Exception {
+		String expectedResponseBody = read("get_payment_response_body.json");
+		arrangeMockServerResponse(expectedResponseBody);
+
+		CompletableFuture<PaymentDetailsResponse> responseCF =
+				client.sendRequest(getGetPaymentRequest());
+
+		RecordedRequest request = mockWebServer.takeRequest();
+		assertSame(1, mockWebServer.getRequestCount());
+		assertEquals(MOCK_WEB_SERVER_BASE_URL + "/get_payment", request.getPath());
+		JSONAssert.assertEquals(
+				read("get_payment_request_body.json"),
+				request.getBody().readUtf8(),
+				true
+		);
+
+		assertPaymentDetailsResponseValues(responseCF.get());
+	}
+
+	@Test
+	public void testGetRefund() throws Exception {
+		String expectedResponseBody = read("get_refund_response_body.json");
+		arrangeMockServerResponse(expectedResponseBody);
+
+		CompletableFuture<RefundDetailsResponse> responseCF =
+				client.sendRequest(getGetRefundRequest());
+
+		RecordedRequest request = mockWebServer.takeRequest();
+		assertSame(1, mockWebServer.getRequestCount());
+		assertEquals(MOCK_WEB_SERVER_BASE_URL + "/get_refund", request.getPath());
+		JSONAssert.assertEquals(
+				read("get_refund_request_body.json"),
+				request.getBody().readUtf8(),
+				true
+		);
+
+		RefundDetailsResponse response = responseCF.get();
+		assertSame(0, response.getResult());
+		assertNotNull(response.getRefund());
+		assertSame(1, response.getRefund().getPaymentProducts().length);
+	}
+
+	@Test
+	public void testCreateRefund() throws Exception {
+		String expectedResponseBody = read("create_refund_response_body.json");
+		arrangeMockServerResponse(expectedResponseBody);
+
+		CompletableFuture<CreateRefundResponse> responseCF =
+				client.sendRequest(getCreateRefundRequest());
+
+		RecordedRequest request = mockWebServer.takeRequest();
+		assertSame(1, mockWebServer.getRequestCount());
+		assertEquals(MOCK_WEB_SERVER_BASE_URL + "/create_refund", request.getPath());
+		JSONAssert.assertEquals(
+				read("create_refund_request_body.json"),
+				request.getBody().readUtf8(),
+				true
+		);
+
+		CreateRefundResponse response = responseCF.get();
+		assertSame(0, response.getResult());
+		assertEquals("instant", response.getType());
+		assertEquals(Long.valueOf(2587411L), response.getRefundId());
+	}
+
+	@Test
+	public void testCancelRefund() throws Exception {
+		String expectedResponseBody = "{\"result\": 0}";
+		arrangeMockServerResponse(expectedResponseBody);
+
+		CompletableFuture<CancelRefundResponse> responseCF =
+				client.sendRequest(getCancelRefundRequest());
+
+		RecordedRequest request = mockWebServer.takeRequest();
+		assertSame(1, mockWebServer.getRequestCount());
+		assertEquals(MOCK_WEB_SERVER_BASE_URL + "/cancel_refund", request.getPath());
+		JSONAssert.assertEquals(
+				read("cancel_refund_request_body.json"),
+				request.getBody().readUtf8(),
+				true
+		);
+
+		CancelRefundResponse response = responseCF.get();
+		assertSame(0, response.getResult());
+	}
 
 	private ChargeRequest getChargeRequestForGetTokenEPayment() {
 		PaymentMethod paymentMethod = new PaymentMethod();
@@ -299,6 +407,7 @@ public class VismaPayClientTest {
 
 		Product product = new Product();
 		product.setId("as123")
+				.setType(ProductType.TYPE_PRODUCT)
 				.setTitle("Product 1")
 				.setCount(1)
 				.setPretaxPrice(BigDecimal.valueOf(300))
@@ -380,6 +489,42 @@ public class VismaPayClientTest {
 		return new DeleteCardTokenRequest(payload);
 	}
 
+	private PaymentMethodsRequest getMerchantPaymentMethodsRequest() {
+		PaymentMethodsRequest.PaymentMethodsPayload payload
+				= new PaymentMethodsRequest.PaymentMethodsPayload();
+		payload.setCurrency("");
+		return new PaymentMethodsRequest(payload);
+	}
+
+	private GetPaymentRequest getGetPaymentRequest() {
+		GetPaymentRequest.GetPaymentPayload payload = new GetPaymentRequest.GetPaymentPayload();
+		payload.setOrderNumber("test_token");
+		return new GetPaymentRequest(payload);
+	}
+
+	private GetRefundRequest getGetRefundRequest() {
+		GetRefundRequest.GetRefundPayload payload = new GetRefundRequest.GetRefundPayload();
+		payload.setRefundId((long)123);
+		return new GetRefundRequest(payload);
+	}
+
+	private CreateRefundRequest getCreateRefundRequest() {
+		Product product = new Product();
+		product.setCount(1)
+				.setProductId(123L);
+
+		CreateRefundRequest.CreateRefundPayload payload = new CreateRefundRequest.CreateRefundPayload();
+		payload.setOrderNumber("a")
+				.addProduct(product);
+		return new CreateRefundRequest(payload);
+	}
+
+	private CancelRefundRequest getCancelRefundRequest() {
+		CancelRefundRequest.CancelRefundPayload payload = new CancelRefundRequest.CancelRefundPayload();
+		payload.setRefundId(123L);
+		return new CancelRefundRequest(payload);
+	}
+
 	private void assertCardTokenResponseValues(CardTokenResponse response) {
 		Source source = response.getSource();
 
@@ -390,6 +535,42 @@ public class VismaPayClientTest {
 		assertSame((byte)5, source.getExpMonth());
 		assertEquals("Visa", source.getBrand());
 		assertEquals("card_token", source.getCardToken());
+	}
+
+	private void assertPaymentMethodsResponseValues(PaymentMethodsResponse response) {
+		assertSame(0, response.getResult());
+		assertSame(2, response.getPaymentMethods().length);
+
+		org.helsinki.vismapay.model.paymentmethods.PaymentMethod method
+				= response.getPaymentMethods()[0];
+		assertEquals("Mobilepay", method.getName());
+		assertEquals("mobilepay", method.getSelectedValue());
+		assertEquals("wallets", method.getGroup());
+		assertEquals("https://www.vismapay.com", method.getImg());
+		assertEquals(BigInteger.valueOf(0), method.getMinAmount());
+		assertEquals(BigInteger.valueOf(100000), method.getMaxAmount());
+		assertEquals("1479131257", method.getImgTimestamp());
+		assertEquals("Mobilepay", method.getName());
+
+		assertSame(2, method.getCurrency().length);
+		assertEquals("EUR", method.getCurrency()[0]);
+	}
+
+	private void assertPaymentDetailsResponseValues(PaymentDetailsResponse response) {
+		assertSame(0, response.getResult());
+
+		Payment payment = response.getPayment();
+		assertSame(3, payment.getPaymentProducts().length);
+		assertSame(1, payment.getRefunds().length);
+		assertNotNull(payment.getCustomer());
+		assertNotNull(payment.getSource());
+
+		assertEquals(Long.valueOf((long)123), payment.getId());
+		assertEquals(BigDecimal.valueOf((long)562), payment.getAmount());
+		assertEquals("EUR", payment.getCurrency());
+		assertEquals("test_order_1", payment.getOrderNumber());
+		assertEquals(Short.valueOf((short)4), payment.getStatus());
+		assertEquals("email", payment.getRefundType());
 	}
 
 	private void arrangeMockServerResponse(String body) {

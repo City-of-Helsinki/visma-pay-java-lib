@@ -1,4 +1,4 @@
-package org.helsinki.vismapay.model;
+package org.helsinki.vismapay.model.payment;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
@@ -21,10 +21,16 @@ public class Product implements Serializable {
 	private BigDecimal pretaxPrice;
 
 	private BigDecimal price;
-	private Integer type = ProductType.TYPE_PRODUCT;
+	private Integer type;
 
 	@SerializedName(value = "merchant_id")
 	private Long merchantId;
+
+	/**
+	 * Product's id in Visma Pay's system
+	 */
+	@SerializedName(value = "product_id")
+	private Long productId;
 
 	private String cp;
 

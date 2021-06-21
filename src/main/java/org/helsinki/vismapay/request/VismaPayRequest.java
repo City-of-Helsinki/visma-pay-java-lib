@@ -63,6 +63,5 @@ public abstract class VismaPayRequest<T extends VismaPayResponse> {
 	protected void applyHeaders(VismaPayClient client, Request.Builder requst) {
 		requst.addHeader("Connection", "close");
 		requst.addHeader("Content-Type", "application/json; charset=" + StandardCharsets.UTF_8);
-		// TODO: others needed?
 	}
 }

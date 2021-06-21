@@ -1,4 +1,4 @@
-package org.helsinki.vismapay.request;
+package org.helsinki.vismapay.request.payment;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -10,11 +10,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import org.helsinki.vismapay.VismaPayClient;
 import org.helsinki.vismapay.gson.adapter.InstantSerializer;
-import org.helsinki.vismapay.model.Customer;
-import org.helsinki.vismapay.model.Product;
-import org.helsinki.vismapay.model.PaymentMethod;
+import org.helsinki.vismapay.model.payment.Customer;
+import org.helsinki.vismapay.model.payment.Product;
+import org.helsinki.vismapay.model.payment.PaymentMethod;
+import org.helsinki.vismapay.request.VismaPayPostRequest;
 import org.helsinki.vismapay.request.payload.trait.impl.BaseOrderIdentifiablePayload;
-import org.helsinki.vismapay.response.ChargeResponse;
+import org.helsinki.vismapay.response.payment.ChargeResponse;
 import org.helsinki.vismapay.util.AuthCodeCalculator;
 
 import java.math.BigInteger;
@@ -68,11 +69,14 @@ public class ChargeRequest extends VismaPayPostRequest<ChargeResponse, ChargeReq
 		private Customer customer;
 		private Set<Product> products;
 
-		public void addProduct(Product product) {
+		@SuppressWarnings("UnusedReturnValue")
+		public PaymentTokenPayload addProduct(Product product) {
 			if (products == null) {
 				products = new HashSet<>();
 			}
 			products.add(product);
+
+			return this;
 		}
 	}
 }

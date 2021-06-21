@@ -1,4 +1,4 @@
-package org.helsinki.vismapay.model;
+package org.helsinki.vismapay.model.payment;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;

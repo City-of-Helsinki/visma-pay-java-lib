@@ -1,8 +1,9 @@
-package org.helsinki.vismapay.response;
+package org.helsinki.vismapay.response.payment;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.helsinki.vismapay.model.Source;
+import org.helsinki.vismapay.model.payment.Source;
+import org.helsinki.vismapay.response.VismaPayResponse;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

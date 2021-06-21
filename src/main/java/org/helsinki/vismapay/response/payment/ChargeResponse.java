@@ -1,14 +1,13 @@
-package org.helsinki.vismapay.response;
+package org.helsinki.vismapay.response.payment;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.ArrayList;
+import org.helsinki.vismapay.response.VismaPayResponse;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ChargeResponse extends VismaPayResponse {
 	private String token;
 	private String type;
-	private ArrayList<String> errors;
+	private String[] errors;
 }

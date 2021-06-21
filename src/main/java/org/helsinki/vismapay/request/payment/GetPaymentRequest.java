@@ -1,4 +1,4 @@
-package org.helsinki.vismapay.request;
+package org.helsinki.vismapay.request.payment;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -6,20 +6,22 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import org.helsinki.vismapay.VismaPayClient;
+import org.helsinki.vismapay.request.VismaPayPostRequest;
 import org.helsinki.vismapay.request.payload.trait.impl.BaseOrderIdentifiablePayload;
-import org.helsinki.vismapay.response.VismaPayResponse;
+import org.helsinki.vismapay.response.payment.PaymentDetailsResponse;
 import org.helsinki.vismapay.util.AuthCodeCalculator;
 
 import java.io.Serializable;
 
 @RequiredArgsConstructor
-public class CapturePaymentRequest extends VismaPayPostRequest<VismaPayResponse, CapturePaymentRequest.CapturePaymentPayload> {
+public class GetPaymentRequest extends
+		VismaPayPostRequest<PaymentDetailsResponse, GetPaymentRequest.GetPaymentPayload> {
 
 	@NonNull
-	private final CapturePaymentPayload payload;
+	private final GetPaymentRequest.GetPaymentPayload payload;
 
 	@Override
-	protected CapturePaymentPayload getPayload(VismaPayClient client) {
+	protected GetPaymentRequest.GetPaymentPayload getPayload(VismaPayClient client) {
 		String authCodeStr = client.getApiKey() + "|" + payload.getOrderNumber();
 		payload.setAuthCode(AuthCodeCalculator.calcAuthCode(client.getPrivateKey(), authCodeStr));
 
@@ -28,12 +30,12 @@ public class CapturePaymentRequest extends VismaPayPostRequest<VismaPayResponse,
 
 	@Override
 	public String path() {
-		return "capture";
+		return "get_payment";
 	}
 
 	@Override
-	public Class<VismaPayResponse> getResponseType() {
-		return VismaPayResponse.class;
+	public Class<PaymentDetailsResponse> getResponseType() {
+		return PaymentDetailsResponse.class;
 	}
 
 	/**
@@ -42,8 +44,8 @@ public class CapturePaymentRequest extends VismaPayPostRequest<VismaPayResponse,
 	@EqualsAndHashCode(callSuper = true)
 	@Data
 	@Accessors(chain = true)
-	public static class CapturePaymentPayload
-			extends BaseOrderIdentifiablePayload<CheckPaymentStatusRequest.PaymentStatusPayload>
+	public static class GetPaymentPayload
+			extends BaseOrderIdentifiablePayload<GetPaymentPayload>
 			implements Serializable {
 	}
 }

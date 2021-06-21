@@ -1,4 +1,4 @@
-package org.helsinki.vismapay.request;
+package org.helsinki.vismapay.request.payment;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
@@ -7,11 +7,12 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import org.helsinki.vismapay.VismaPayClient;
-import org.helsinki.vismapay.model.Customer;
-import org.helsinki.vismapay.model.Initiator;
-import org.helsinki.vismapay.model.Product;
+import org.helsinki.vismapay.model.payment.Customer;
+import org.helsinki.vismapay.model.payment.Initiator;
+import org.helsinki.vismapay.model.payment.Product;
+import org.helsinki.vismapay.request.VismaPayPostRequest;
 import org.helsinki.vismapay.request.payload.trait.impl.BaseOrderIdentifiablePayload;
-import org.helsinki.vismapay.response.ChargeCardTokenResponse;
+import org.helsinki.vismapay.response.payment.ChargeCardTokenResponse;
 import org.helsinki.vismapay.util.AuthCodeCalculator;
 
 import java.math.BigInteger;
@@ -19,7 +20,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @RequiredArgsConstructor
-public class ChargeCardTokenRequest extends VismaPayPostRequest<ChargeCardTokenResponse, ChargeCardTokenRequest.CardTokenPayload> {
+public class ChargeCardTokenRequest extends
+		VismaPayPostRequest<ChargeCardTokenResponse, ChargeCardTokenRequest.CardTokenPayload> {
 
 	@NonNull
 	private final CardTokenPayload payload;

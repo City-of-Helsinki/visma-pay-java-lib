@@ -1,4 +1,4 @@
-package org.helsinki.vismapay.model;
+package org.helsinki.vismapay.model.payment;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
@@ -6,7 +6,6 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.Set;
 
 @Data
 @Accessors(chain = true)
@@ -42,10 +41,10 @@ public class PaymentMethod implements Serializable {
 	private Integer overrideAutoSettlement;
 
 	@SerializedName(value = "selected_terminal")
-	private Set<String> selectedTerminal;
+	private String[] selectedTerminal;
 
 	@SerializedName(value = "skip_receipt")
 	private Boolean skipReceipt;
 
-	private Set<String> selected;
+	private String[] selected;
 }

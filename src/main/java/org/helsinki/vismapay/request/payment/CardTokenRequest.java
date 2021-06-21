@@ -1,4 +1,4 @@
-package org.helsinki.vismapay.request;
+package org.helsinki.vismapay.request.payment;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
@@ -7,8 +7,10 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import org.helsinki.vismapay.VismaPayClient;
+import org.helsinki.vismapay.request.VismaPayPostRequest;
+import org.helsinki.vismapay.request.payload.trait.impl.BaseCardTokenIdentifiablePayload;
 import org.helsinki.vismapay.request.payload.trait.impl.VismaPayPayload;
-import org.helsinki.vismapay.response.CardTokenResponse;
+import org.helsinki.vismapay.response.payment.CardTokenResponse;
 import org.helsinki.vismapay.util.AuthCodeCalculator;
 
 @RequiredArgsConstructor
@@ -35,12 +37,12 @@ public class CardTokenRequest extends VismaPayPostRequest<CardTokenResponse, Car
 		return CardTokenResponse.class;
 	}
 
+	/**
+	 * Convenience class
+	 */
 	@EqualsAndHashCode(callSuper = true)
 	@Data
 	@Accessors(chain = true)
-	public static class CardTokenPayload extends VismaPayPayload<CardTokenPayload> {
-
-		@SerializedName("card_token")
-		private String cardToken;
+	public static class CardTokenPayload extends BaseCardTokenIdentifiablePayload<CardTokenPayload> {
 	}
 }
