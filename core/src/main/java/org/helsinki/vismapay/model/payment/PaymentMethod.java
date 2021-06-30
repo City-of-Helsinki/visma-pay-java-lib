@@ -3,9 +3,9 @@ package org.helsinki.vismapay.model.payment;
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.helsinki.vismapay.util.BooleanUtils;
 
 import java.io.Serializable;
-import java.time.Instant;
 
 @Data
 @Accessors(chain = true)
@@ -24,7 +24,7 @@ public class PaymentMethod implements Serializable {
 	private String type;
 
 	@SerializedName(value = "register_card_token")
-	private Boolean registerCardToken;
+	private Byte registerCardToken;
 
 	@SerializedName(value = "return_url")
 	private String returnUrl;
@@ -35,7 +35,7 @@ public class PaymentMethod implements Serializable {
 	private String lang = "fi";
 
 	@SerializedName(value = "token_valid_until")
-	private Instant tokenValidUntil;
+	private String tokenValidUntil;
 
 	@SerializedName(value = "override_auto_settlement")
 	private Integer overrideAutoSettlement;
@@ -44,7 +44,25 @@ public class PaymentMethod implements Serializable {
 	private String[] selectedTerminal;
 
 	@SerializedName(value = "skip_receipt")
-	private Boolean skipReceipt;
+	private Byte skipReceipt;
 
 	private String[] selected;
+
+	public Boolean getRegisterCardToken() {
+		return BooleanUtils.toBoolean(registerCardToken);
+	}
+
+	public PaymentMethod setRegisterCardToken(Boolean registerCardToken) {
+		this.registerCardToken = BooleanUtils.toByte(registerCardToken);
+		return this;
+	}
+
+	public Boolean getSkipReceipt() {
+		return BooleanUtils.toBoolean(skipReceipt);
+	}
+
+	public PaymentMethod setSkipReceipt(Boolean skipReceipt) {
+		this.skipReceipt = BooleanUtils.toByte(skipReceipt);
+		return this;
+	}
 }

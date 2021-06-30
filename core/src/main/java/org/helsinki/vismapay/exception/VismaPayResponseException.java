@@ -31,7 +31,8 @@ public class VismaPayResponseException extends IOException {
 		}
 
 		public static <T> T of(Throwable throwable, Class<T> clazz) {
-			return new Gson().fromJson("{}", clazz); // TODO: needed class?
+			// TODO: there has to be a better way to do this
+			return new Gson().fromJson("{}", clazz);
 		}
 	}
 }

@@ -77,7 +77,7 @@ public class VismaPayClient implements Serializable {
 				);
 				return request.parseResponse(result);
 		}).exceptionally((tr) ->
-				VismaPayResponseException.VismaPayFailedResponse.of(tr, request.getResponseType()) // TODO: should throw exception instead?
+				VismaPayResponseException.VismaPayFailedResponse.of(tr, request.getResponseType())
 		);
 	}
 

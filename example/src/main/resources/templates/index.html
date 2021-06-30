@@ -30,7 +30,7 @@
             <h2>Pay by button</h2>
 
             <th:block th:each="pm : ${merchantPaymentMethods}">
-                <a class="img" th:href="'/auth-payment(selected=' + ${pm} + ')'">
+                <a class="img" th:href="'/auth-payment?selected=' + ${pm.selectedValue}">
                     <img th:alt="${pm.name}" th:src="${pm.img}"></img>
                 </a>
             </th:block>

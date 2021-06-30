@@ -25,7 +25,6 @@ public class GetVismaPayTokenCommand {
 	private VismaPayClientFactory vismaPayClientFactory;
 
 	public String getToken(String returnUrl, String method, String selected) {
-		// TODO: do we need to do anything else here?
 		VismaPayClient client = vismaPayClientFactory.create();
 
 		CompletableFuture<ChargeResponse> responseCF =
@@ -49,11 +48,11 @@ public class GetVismaPayTokenCommand {
 		}
 
 		PaymentMethod paymentMethod = new PaymentMethod();
-		paymentMethod.setType(PaymentMethod.TYPE_EPAYMENT)
+		paymentMethod.setType(method)
 				.setReturnUrl(returnUrl)
 				.setNotifyUrl(returnUrl);
 
-		if (Strings.isNullOrEmpty(selected)) {
+		if (!Strings.isNullOrEmpty(selected)) {
 			paymentMethod.setSelected(new String[] { selected });
 		}
 
@@ -62,24 +61,26 @@ public class GetVismaPayTokenCommand {
 				.setLastname("Testaaja")
 				.setAddressStreet("Testaddress 1")
 				.setAddressCity("Testlandia")
-				.setAddressZip("12345");
+				.setAddressZip("12345")
+				.setEmail("test.person@example.com");
 
 		Product product = new Product();
-		product.setId("product-id-123")
+		product.setId("product123")
 				.setType(ProductType.TYPE_PRODUCT)
 				.setTitle("Product 1")
 				.setCount(1)
-				.setPretaxPrice(BigDecimal.valueOf(2000))
-				.setTax(1)
-				.setPrice(BigDecimal.valueOf(2000));
+				.setPretaxPrice(BigDecimal.valueOf(100))
+				.setTax(24)
+				.setPrice(BigDecimal.valueOf(124));
 
 		ChargeRequest.PaymentTokenPayload payload = new ChargeRequest.PaymentTokenPayload();
-		payload.setAmount(BigInteger.valueOf(2000))
-				.setOrderNumber("example_payment_" + Instant.now().toString())
+		payload.setAmount(BigInteger.valueOf(124)) // needs to match the sum of products
+				.setOrderNumber("example-payment-" + Instant.now().toEpochMilli())
 				.setCurrency("EUR")
 				.setPaymentMethod(paymentMethod)
 				.addProduct(product)
-				.setCustomer(customer);
+				.setCustomer(customer)
+				.setEmail("test.person@example.com");
 
 		return payload;
 	}

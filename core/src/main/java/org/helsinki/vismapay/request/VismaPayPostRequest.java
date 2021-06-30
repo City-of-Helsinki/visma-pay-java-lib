@@ -31,7 +31,7 @@ public abstract class VismaPayPostRequest<T extends VismaPayResponse, B extends 
 		}
 		client.setVismaPayPayloadDefaults(getPayload(client));
 
-		Gson gson = getDefaultGson();
+		Gson gson = getGson(true);
 		String payload = gson.toJson(getPayload(client));
 
 		log.debug("Payload : {}", payload);

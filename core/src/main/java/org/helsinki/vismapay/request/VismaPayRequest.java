@@ -18,6 +18,8 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 public abstract class VismaPayRequest<T extends VismaPayResponse> {
 
+	protected Gson gson;
+
 	public abstract String path();
 
 	public abstract Request formRequest(VismaPayClient client);
@@ -52,12 +54,24 @@ public abstract class VismaPayRequest<T extends VismaPayResponse> {
 
 	public <U> U parseResponse(String json, Class<U> type) throws JsonSyntaxException {
 		log.debug("{} parsing response : {}", path(), json);
-		return getDefaultGson().fromJson(json, type);
+		return getGson().fromJson(json, type);
 	}
 
-	protected Gson getDefaultGson() {
-		GsonBuilder gsonBuilder = new GsonBuilder();
-		return gsonBuilder.create(); // TODO: do not create new one every time
+	protected Gson getGson() {
+		return getGson(false);
+	}
+
+	protected Gson getGson(boolean createNew) {
+		if (gson == null || createNew) {
+			GsonBuilder gsonBuilder = new GsonBuilder();
+			configureGsonBuilder(gsonBuilder);
+			gson = gsonBuilder.create();
+		}
+		return gson;
+	}
+
+	protected void configureGsonBuilder(GsonBuilder gsonBuilder) {
+		// nothing by default
 	}
 
 	protected void applyHeaders(VismaPayClient client, Request.Builder requst) {

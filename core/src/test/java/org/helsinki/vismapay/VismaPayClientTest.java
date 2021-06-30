@@ -145,20 +145,20 @@ public class VismaPayClientTest {
 		assertSame(0, response.getResult());
 	}
 
-	// TODO: currently does not throw exception... remove later if not needed
-	/*@Test
-	public void testGetTokenThrowsException() throws Exception {
+	@Test
+	public void testGetTokenReturnsFailedResponse() throws Exception {
 		arrangeMockServerResponse("kkk", 500);
 
-		PaymentToken paymentToken = new PaymentToken();
-		paymentToken.setAmount(BigInteger.valueOf(100))
+		ChargeRequest.PaymentTokenPayload payload = new ChargeRequest.PaymentTokenPayload();
+		payload.setAmount(BigInteger.valueOf(100))
 				.setOrderNumber("a")
 				.setCurrency("EUR");
 
-		CompletableFuture<ChargeResponse> chargeResponseCF = client.sendRequest(new ChargeRequest(paymentToken));
+		CompletableFuture<ChargeResponse> responseCF = client.sendRequest(new ChargeRequest(payload));
 
-		assertSame(1, mockWebServer.getRequestCount());
-	}*/
+		ChargeResponse response = responseCF.get();
+		assertNull(response.getResult());
+	}
 
 	@Test
 	public void testChargeCardToken() throws Exception {
@@ -403,7 +403,8 @@ public class VismaPayClientTest {
 		PaymentMethod paymentMethod = new PaymentMethod();
 		paymentMethod.setType(PaymentMethod.TYPE_EPAYMENT)
 				.setReturnUrl("https://localhost/return")
-				.setNotifyUrl("https://localhost/return");
+				.setNotifyUrl("https://localhost/return")
+				.setSkipReceipt(false);
 
 		Product product = new Product();
 		product.setId("as123")

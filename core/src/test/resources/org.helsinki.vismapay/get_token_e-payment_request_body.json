@@ -7,7 +7,8 @@
     "type": "e-payment",
     "return_url": "https://localhost/return",
     "notify_url": "https://localhost/return",
-    "lang": "fi"
+    "lang": "fi",
+    "skip_receipt": 0
   },
   "products": [
     {

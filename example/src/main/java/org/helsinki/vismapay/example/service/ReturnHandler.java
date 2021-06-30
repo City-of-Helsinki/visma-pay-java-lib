@@ -2,6 +2,7 @@ package org.helsinki.vismapay.example.service;
 
 import org.helsinki.vismapay.example.util.Strings;
 import org.helsinki.vismapay.util.ReturnDataAuthCodeBuilder;
+import org.helsinki.vismapay.example.Constants;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,10 +51,8 @@ public class ReturnHandler {
 	}
 
 	private String buildAuthCodeFromReturnData(Map<String, String[]> parameterMap) {
-		String privateKey = "dasds"; // TODO: hardcode key for now...
-
 		ReturnDataAuthCodeBuilder builder = new ReturnDataAuthCodeBuilder(
-				privateKey,
+				Constants.PRIVATE_KEY,
 				Short.valueOf(parameterMap.get("RETURN_CODE")[0]),
 				parameterMap.get("ORDER_NUMBER")[0]
 		);

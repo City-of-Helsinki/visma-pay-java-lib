@@ -15,7 +15,7 @@ public class PaymentMethod implements Serializable {
 	private String img;
 
 	@SerializedName(value = "img_timestamp")
-	private String imgTimestamp; // TODO: change to java instant!
+	private String imgTimestamp;
 
 	@SerializedName(value = "min_amount")
 	private BigInteger minAmount;

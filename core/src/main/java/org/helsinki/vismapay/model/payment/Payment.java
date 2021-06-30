@@ -21,8 +21,12 @@ public class Payment implements Serializable {
 
 	private Source source;
 
+	/**
+	 * Format: "YYYY-MM-DD HH-MM-SS" and in UTC-time.
+	 * TODO: datetime conversion?
+	 */
 	@SerializedName("created_at")
-	private String createdAt; // TODO: date conversion?
+	private String createdAt;
 
 	@SerializedName("refund_type")
 	private String refundType;

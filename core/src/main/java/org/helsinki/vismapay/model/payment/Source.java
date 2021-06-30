@@ -3,6 +3,7 @@ package org.helsinki.vismapay.model.payment;
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.helsinki.vismapay.util.BooleanUtils;
 
 import java.io.Serializable;
 
@@ -26,10 +27,10 @@ public class Source implements Serializable {
 	private String merchantReceipt;
 
 	@SerializedName("signature_required")
-	private Boolean signatureRequired;
+	private Byte signatureRequired;
 
 	@SerializedName("id_check_required")
-	private Boolean idCheckRequired; // TODO: test if these work!
+	private Byte idCheckRequired;
 
 	@SerializedName("exp_year")
 	private Short expYear;
@@ -50,5 +51,23 @@ public class Source implements Serializable {
 	private String clientIpCountry;
 
 	@SerializedName("error_code")
-	private Integer errorCode; // TODO: ok?
+	private Integer errorCode;
+
+	public Boolean getSignatureRequired() {
+		return BooleanUtils.toBoolean(signatureRequired);
+	}
+
+	public Source setSignatureRequired(Boolean signatureRequired) {
+		this.signatureRequired = BooleanUtils.toByte(signatureRequired);
+		return this;
+	}
+
+	public Boolean getIdCheckRequired() {
+		return BooleanUtils.toBoolean(idCheckRequired);
+	}
+
+	public Source setIdCheckRequired(Boolean idCheckRequired) {
+		this.idCheckRequired = BooleanUtils.toByte(idCheckRequired);
+		return this;
+	}
 }

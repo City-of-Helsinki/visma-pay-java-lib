@@ -19,8 +19,12 @@ public class Refund implements Serializable {
 	@SerializedName("order_number")
 	private String orderNumber;
 
+	/**
+	 * Format: "YYYY-MM-DD HH-MM-SS" and in UTC-time.
+	 * TODO: datetime conversion?
+	 */
 	@SerializedName("created_at")
-	private String createdAt; // TODO: date conversion?
+	private String createdAt;
 
 	private Short status;
 

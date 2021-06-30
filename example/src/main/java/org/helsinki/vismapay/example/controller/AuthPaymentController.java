@@ -2,6 +2,8 @@ package org.helsinki.vismapay.example.controller;
 
 import org.helsinki.vismapay.VismaPayClient;
 import org.helsinki.vismapay.example.service.GetVismaPayTokenCommand;
+import org.helsinki.vismapay.example.util.Strings;
+import org.helsinki.vismapay.model.payment.PaymentMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,10 @@ public class AuthPaymentController {
 		String returnUrl = resolveReturnUrl(request);
 		String method = request.getParameter("method");
 		String selected = request.getParameter("selected");
+
+		if (Strings.isNullOrEmpty(method)) {
+			method = PaymentMethod.TYPE_EPAYMENT;
+		}
 
 		try {
 			String token = getVismaPayTokenCommand.getToken(returnUrl, method, selected);
