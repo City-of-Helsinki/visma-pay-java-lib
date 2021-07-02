@@ -1,5 +1,6 @@
 package org.helsinki.vismapay.example.controller;
 
+import org.helsinki.vismapay.example.Constants;
 import org.helsinki.vismapay.example.service.ReturnHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,10 +21,10 @@ public class ReturnController {
 		ReturnHandler.Result result = returnHandler.handle(request);
 
 		if (result.isValid()) {
-			redirectAttributes.addFlashAttribute("message", "Payment succeeded");
+			redirectAttributes.addFlashAttribute(Constants.KEY_MESSAGE, "Payment succeeded");
 			return new ModelAndView("redirect:/");
 		} else {
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute(Constants.KEY_ERROR, result.getMessage());
 			return new ModelAndView("redirect:/error");
 		}
 	}

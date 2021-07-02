@@ -25,7 +25,8 @@ public class GetVismaPayTokenCommand {
 	private VismaPayClientFactory vismaPayClientFactory;
 
 	public String getToken(String returnUrl, String method, String selected) {
-		VismaPayClient client = vismaPayClientFactory.create();
+		// NB: version should be wm3.1 for channel payments!
+		VismaPayClient client = vismaPayClientFactory.create("w3.1");
 
 		CompletableFuture<ChargeResponse> responseCF =
 				client.sendRequest(new ChargeRequest(getSamplePayload(returnUrl, method, selected)));

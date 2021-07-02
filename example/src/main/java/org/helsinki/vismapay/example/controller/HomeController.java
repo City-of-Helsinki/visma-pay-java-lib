@@ -1,5 +1,6 @@
 package org.helsinki.vismapay.example.controller;
 
+import org.helsinki.vismapay.example.Constants;
 import org.helsinki.vismapay.example.service.GetPaymentMethodsCommand;
 import org.helsinki.vismapay.example.util.Strings;
 import org.helsinki.vismapay.model.paymentmethods.PaymentMethod;
@@ -16,19 +17,20 @@ public class HomeController {
 	private GetPaymentMethodsCommand getPaymentMethodsCommand;
 
 	@RequestMapping("/")
-	public String home(@ModelAttribute("message") String message, Model model) {
+	public String home(@ModelAttribute(Constants.KEY_MESSAGE) String message, Model model) {
 		addPaymentMethodsForRender(model);
 		addMessageForRender(message, model);
-
 		return "index";
 	}
 
 	private void addPaymentMethodsForRender(Model model) {
+		String attributeKey = "merchantPaymentMethods";
+
 		try {
 			PaymentMethod[] merchantPaymentMethods = getPaymentMethodsCommand.getMerchantPaymentMethods();
-			model.addAttribute("merchantPaymentMethods", merchantPaymentMethods);
-		} catch (Exception ignored) {
-			model.addAttribute("merchantPaymentMethods", new String[0]);
+			model.addAttribute(attributeKey, merchantPaymentMethods);
+		} catch (Exception e) {
+			model.addAttribute(attributeKey, new String[0]);
 		}
 	}
 

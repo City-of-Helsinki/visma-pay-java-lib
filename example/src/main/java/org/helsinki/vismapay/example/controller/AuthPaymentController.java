@@ -1,6 +1,7 @@
 package org.helsinki.vismapay.example.controller;
 
 import org.helsinki.vismapay.VismaPayClient;
+import org.helsinki.vismapay.example.Constants;
 import org.helsinki.vismapay.example.service.GetVismaPayTokenCommand;
 import org.helsinki.vismapay.example.util.Strings;
 import org.helsinki.vismapay.model.payment.PaymentMethod;
@@ -29,9 +30,9 @@ public class AuthPaymentController {
 
 		try {
 			String token = getVismaPayTokenCommand.getToken(returnUrl, method, selected);
-			return "redirect:/" + VismaPayClient.API_URL + "/token/" + token;
+			return "redirect:" + VismaPayClient.API_URL + "/token/" + token;
 		} catch (Exception e) {
-			redirectAttributes.addFlashAttribute("error", e);
+			redirectAttributes.addFlashAttribute(Constants.KEY_ERROR, e);
 			return "redirect:/error";
 		}
 	}
