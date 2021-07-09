@@ -10,10 +10,10 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>core</artifactId>
+    <artifactId>visma-pay-java-lib-core</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>core</name>
-    <description>Visma Pay Java Library</description>
+    <name>Visma Pay Java Library Core</name>
+    <description>Visma Pay Java Library Implementation</description>
     <url>https://vismapay.fi</url>
 
     <properties>

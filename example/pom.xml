@@ -10,8 +10,10 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>example</artifactId>
+    <artifactId>visma-pay-java-lib-example</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <name>Visma Pay Java Library Example</name>
+    <description>Visma Pay Java Library Examples</description>
 
     <properties>
         <java.version>1.8</java.version>
@@ -81,7 +83,7 @@
             <url>https://pkgs.dev.azure.com/City-of-Helsinki/talpa-verkkokauppa/_packaging/talpa-artifacts/maven/v1</url>
         </repository>
     </distributionManagement>
-    
+
     <repositories>
         <repository>
             <id>talpa-artifacts</id>
