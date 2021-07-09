@@ -13,8 +13,8 @@
     <url>https://vismapay.fi</url>
 
     <modules>
-        <module>visma-pay-java-lib-core</module>
-        <module>visma-pay-java-lib-example</module>
+        <module>core</module>
+        <module>example</module>
     </modules>
 
     <build>
