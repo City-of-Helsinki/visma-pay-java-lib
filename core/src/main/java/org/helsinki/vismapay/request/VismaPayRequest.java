@@ -3,7 +3,7 @@ package org.helsinki.vismapay.request;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import com.sun.tools.javac.util.Pair;
+import org.helsinki.vismapay.util.Pair;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Request;
@@ -40,9 +40,9 @@ public abstract class VismaPayRequest<T extends VismaPayResponse> {
 
 	@SneakyThrows
 	public T parseResponse(Pair<Response, String> response) {
-		T vismaPayResponse = parseResponse(response.snd);
+		T vismaPayResponse = parseResponse(response.getValue());
 
-		if (!response.fst.isSuccessful() || vismaPayResponse.getResult() == null) {
+		if (!response.getKey().isSuccessful() || vismaPayResponse.getResult() == null) {
 			throw new VismaPayResponseException(vismaPayResponse, "Response from Visma Pay API wasn't a success response");
 		}
 		return vismaPayResponse;

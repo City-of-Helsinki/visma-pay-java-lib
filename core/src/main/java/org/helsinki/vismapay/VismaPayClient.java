@@ -1,6 +1,6 @@
 package org.helsinki.vismapay;
 
-import com.sun.tools.javac.util.Pair;
+import org.helsinki.vismapay.util.Pair;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -72,8 +72,8 @@ public class VismaPayClient implements Serializable {
 		return responseFuture.thenApply(result -> {
 				log.info(
 						"Response for {} with body : {}",
-						result.fst.request().url(),
-						result.snd
+						result.getKey().request().url(),
+						result.getValue()
 				);
 				return request.parseResponse(result);
 		}).exceptionally((tr) ->
