@@ -23,7 +23,7 @@
     <dependencies>
         <dependency>
             <groupId>org.helsinki</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>visma-pay-java-lib-core</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
