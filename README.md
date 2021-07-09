@@ -10,8 +10,8 @@ See documentation at https://www.vismapay.com/docs/web_payments/
   <dependencies>
     <dependency> 
       <groupId>org.helsinki</groupId>
-      <artifactId>visma-pay-java-lib</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <artifactId>visma-pay-java-lib-core/artifactId>
+      <version>1.0.1-SNAPSHOT</version>
     </dependency> 
   </dependencies>
 ```
