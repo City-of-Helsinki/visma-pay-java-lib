@@ -1,0 +1,24 @@
+ 27 lines (23 sloc) 625 Bytes
+# Continuous integration (CI) triggers cause a pipeline to run whenever you push
+# an update to the specified branches or you push specified tags.
+trigger:
+  tags:
+    include:
+      - visma-pay-java-lib/*
+  branches:
+    include:
+      - master
+
+# Opting out of pull request validation
+pr: none
+
+resources:
+  repositories:
+    # Azure DevOps repository
+    - repository: talpa-verkkokauppa-pipelines
+      type: git
+      # project/repository
+      name: talpa-verkkokauppa/talpa-verkkokauppa-pipelines
+
+extends:
+  template: azure-pipelines-talpa-verkkokauppa-visma-pay-java-lib.yml@talpa-verkkokauppa-pipelines
