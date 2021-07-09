@@ -7,11 +7,11 @@
     <parent>
         <artifactId>visma-pay-java-lib</artifactId>
         <groupId>org.helsinki</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>visma-pay-java-lib-example</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <name>Visma Pay Java Library Example</name>
     <description>Visma Pay Java Library Examples</description>
 
@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.helsinki</groupId>
             <artifactId>visma-pay-java-lib-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
