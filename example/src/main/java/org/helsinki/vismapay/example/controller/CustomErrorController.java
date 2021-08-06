@@ -1,7 +1,7 @@
 package org.helsinki.vismapay.example.controller;
 
 import org.helsinki.vismapay.example.Constants;
-import org.springframework.boot.autoconfigure.web.ErrorController;
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,7 +16,6 @@ public class CustomErrorController implements ErrorController {
 		return "error";
 	}
 
-	@Override
 	public String getErrorPath() {
 		return null;
 	}
