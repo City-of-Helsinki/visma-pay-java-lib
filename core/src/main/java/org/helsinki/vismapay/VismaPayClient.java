@@ -30,7 +30,7 @@ public class VismaPayClient implements Serializable {
 	private transient OkHttpClient httpClient;
 
 	public VismaPayClient(String apiKey, String privateKey) {
-		this(apiKey, privateKey, "w3.1");
+		this(apiKey, privateKey, "wm3.1");
 	}
 
 	public VismaPayClient(String apiKey, String privateKey, String version) {
