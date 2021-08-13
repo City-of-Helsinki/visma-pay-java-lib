@@ -4,16 +4,29 @@ import lombok.NonNull;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 
 public class AuthCodeCalculator {
 
 	public static String calcAuthCode(@NonNull String secretKey, @NonNull String data) {
-		return String.format("%032x", new BigInteger(1, calcHmacSha256(
+		return toHexString(calcHmacSha256(
 				secretKey.getBytes(StandardCharsets.UTF_8),
 				data.getBytes(StandardCharsets.UTF_8)
-		))).toUpperCase();
+		)).toUpperCase();
+	}
+
+	private static String toHexString(byte[] bytes) {
+		StringBuilder hexString = new StringBuilder();
+	
+		for (int i = 0; i < bytes.length; i++) {
+			String hex = Integer.toHexString(0xFF & bytes[i]);
+			if (hex.length() == 1) {
+				hexString.append('0');
+			}
+			hexString.append(hex);
+		}
+	
+		return hexString.toString();
 	}
 
 	private static byte[] calcHmacSha256(byte[] secretKey, byte[] data) {
