@@ -5,6 +5,9 @@ trigger:
     include:
       - main
 
+pool:
+  vmImage: ubuntu-latest
+
 # Opting out of pull request validation
 pr: none
 
