@@ -8,7 +8,7 @@ import org.helsinki.vismapay.response.VismaPayResponse;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class PaymentStatusResponse extends VismaPayResponse {
-	private Boolean settled;
+	private Byte settled;
 	private String type;
 	private Source source;
 }
